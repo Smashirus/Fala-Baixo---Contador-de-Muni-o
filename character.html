@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Personagem</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <button id="back-to-menu" class="button">Voltar ao Menu</button>
+        <button id="delete-character" class="button">Deletar Personagem</button>
+        <h2 id="character-name"></h2>
+        <div id="character-menu">
+            <div id="left-menu">
+                <button id="show-add-weapon-menu" class="button">Adicionar Arma</button>
+                <button id="show-add-ammo-menu" class="button">Adicionar Munição</button>
+            </div>
+            <div id="inventory">
+                <h2>Inventário</h2>
+                <ul id="weapon-list"></ul>
+                <ul id="ammo-list"></ul>
+            </div>
+        </div>
+        <div id="add-weapon-menu" class="hidden">
+            <h2>Adicionar Arma</h2>
+            <button class="button" data-weapon="Pistola">Pistola</button>
+            <button class="button" data-weapon="Revólver">Revólver</button>
+            <button class="button" data-weapon="Fuzil de Caça">Fuzil de Caça</button>
+            <button class="button" data-weapon="Submetralhadora">Submetralhadora</button>
+            <button class="button" data-weapon="Espingarda">Espingarda</button>
+            <button class="button" data-weapon="Fuzil de Assalto">Fuzil de Assalto</button>
+            <button class="button" data-weapon="Fuzil de Precisão">Fuzil de Precisão</button>
+            <button class="button" data-weapon="Metralhadora">Metralhadora</button>
+            <button id="close-add-weapon-menu" class="button">Fechar</button>
+        </div>
+        <div id="add-ammo-menu" class="hidden">
+            <h2>Adicionar Munição</h2>
+            <button class="button" data-ammo="curtas">Balas Curtas</button>
+            <button class="button" data-ammo="longas">Balas Longas</button>
+            <button id="close-add-ammo-menu" class="button">Fechar</button>
+        </div>
+        <div id="equipped-weapon-section" class="equipped-section hidden">
+            <h2>Arma Equipada</h2>
+            <p id="equipped-weapon-name">Nenhuma</p>
+            <p id="equipped-weapon-ammo">0 / 0</p>
+            <button id="reload-weapon" class="button">Recarregar</button>
+            <div id="burst-controls" class="hidden">
+                <button id="fire-burst" class="button">Rajada</button>
+            </div>
+            <button id="unequip-weapon" class="button">Desequipar</button>
+            <div id="ammo-controls" class="ammo-controls">
+                <button id="decrease-ammo" class="button">-</button>
+                <span id="ammo-amount">0</span>
+                <button id="increase-ammo" class="button">+</button>
+            </div>
+        </div>
+        <script src="character.js"></script>
+    </div>
+</body>
+</html>
