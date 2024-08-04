@@ -1,258 +1,197 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const backToMenuButton = document.getElementById('back-to-menu');
-    const deleteCharacterButton = document.getElementById('delete-character');
-    const showAddWeaponMenuButton = document.getElementById('show-add-weapon-menu');
-    const closeAddWeaponMenuButton = document.getElementById('close-add-weapon-menu');
-    const addWeaponMenu = document.getElementById('add-weapon-menu');
-    const showAddAmmoMenuButton = document.getElementById('show-add-ammo-menu');
-    const closeAddAmmoMenuButton = document.getElementById('close-add-ammo-menu');
-    const addAmmoMenu = document.getElementById('add-ammo-menu');
-    const weaponList = document.getElementById('weapon-list');
+    const backToMainButton = document.getElementById('back-to-main');
+    const addWeaponButton = document.getElementById('add-weapon');
+    const addAmmoButton = document.getElementById('add-ammo');
+    const itemList = document.getElementById('item-list');
     const ammoList = document.getElementById('ammo-list');
-    const equippedWeaponSection = document.getElementById('equipped-weapon-section');
-    const equippedWeaponName = document.getElementById('equipped-weapon-name');
-    const equippedWeaponAmmo = document.getElementById('equipped-weapon-ammo');
-    const reloadWeaponButton = document.getElementById('reload-weapon');
-    const fireBurstButton = document.getElementById('fire-burst');
-    const unequipWeaponButton = document.getElementById('unequip-weapon');
-    const ammoControls = document.querySelector('.ammo-controls');
-    const increaseAmmoButton = document.getElementById('increase-ammo');
-    const decreaseAmmoButton = document.getElementById('decrease-ammo');
-    const ammoAmountSpan = document.getElementById('ammo-amount');
+    const weaponNameElem = document.getElementById('weapon-name');
+    const weaponAmmoElem = document.getElementById('weapon-ammo');
+    const equipButton = document.getElementById('equip-button');
+    const desequipButton = document.getElementById('deselect-button');
+    const reloadButton = document.getElementById('reload-button');
     const burstControls = document.getElementById('burst-controls');
-    const characterNameElement = document.getElementById('character-name');
+    const burstButton = document.getElementById('burst-button');
+    const confirmDeleteButton = document.getElementById('confirm-delete');
 
     let characters = JSON.parse(localStorage.getItem('characters')) || [];
-    let currentCharacterIndex = parseInt(localStorage.getItem('selectedCharacterIndex'), 10);
-    let character = characters[currentCharacterIndex];
+    let selectedCharacterIndex = localStorage.getItem('selectedCharacterIndex');
+    let selectedCharacter = characters[selectedCharacterIndex];
 
-    characterNameElement.textContent = `Inventário de ${character.name}`;
-
-    function updateWeaponList() {
-        weaponList.innerHTML = '';
-        character.inventory.weapons.forEach((weapon, index) => {
+    function updateInventory() {
+        itemList.innerHTML = '';
+        selectedCharacter.inventory.weapons.forEach((weapon, index) => {
             const li = document.createElement('li');
-            li.textContent = `${weapon.name} (${weapon.currentAmmo || 0} / ${weapon.maxAmmo})`;
-            const equipButton = document.createElement('button');
-            equipButton.textContent = 'Equipar';
-            equipButton.dataset.index = index;
-            equipButton.addEventListener('click', () => equipWeapon(index));
-            li.appendChild(equipButton);
-
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Deletar';
-            deleteButton.dataset.index = index;
-            deleteButton.addEventListener('click', () => deleteWeapon(index));
-            li.appendChild(deleteButton);
-
-            weaponList.appendChild(li);
+            li.textContent = `${weapon.name} - ${weapon.ammo} balas`;
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remover';
+            removeButton.dataset.index = index;
+            removeButton.addEventListener('click', () => removeWeapon(index));
+            li.appendChild(removeButton);
+            itemList.appendChild(li);
         });
-    }
 
-    function updateAmmoList() {
         ammoList.innerHTML = '';
         ['curtas', 'longas'].forEach(type => {
-            character.inventory.ammoPacks[type].forEach((pack, index) => {
+            selectedCharacter.inventory.ammoPacks[type].forEach((pack, index) => {
                 const li = document.createElement('li');
-                li.textContent = `Pacote de Munição ${type} (${pack} balas)`;
-                const incrementButton = document.createElement('button');
-                incrementButton.textContent = '+';
-                incrementButton.dataset.index = index;
-                incrementButton.dataset.type = type;
-                incrementButton.addEventListener('click', () => adjustAmmoPack(type, index, 1));
-                li.appendChild(incrementButton);
-
-                const decrementButton = document.createElement('button');
-                decrementButton.textContent = '-';
-                decrementButton.dataset.index = index;
-                decrementButton.dataset.type = type;
-                decrementButton.addEventListener('click', () => adjustAmmoPack(type, index, -1));
-                li.appendChild(decrementButton);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Deletar';
-                deleteButton.dataset.index = index;
-                deleteButton.dataset.type = type;
-                deleteButton.addEventListener('click', () => deleteAmmoPack(type, index));
-                li.appendChild(deleteButton);
-
+                li.textContent = `${type === 'curtas' ? 'Bala Curta' : 'Bala Longa'} - 20 balas`;
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remover';
+                removeButton.dataset.type = type;
+                removeButton.dataset.index = index;
+                removeButton.addEventListener('click', () => removeAmmoPack(type, index));
+                li.appendChild(removeButton);
                 ammoList.appendChild(li);
             });
         });
     }
 
     function updateEquippedWeapon() {
-        if (character.equippedWeapon) {
-            equippedWeaponSection.classList.remove('hidden');
-            equippedWeaponName.textContent = character.equippedWeapon.name;
-            equippedWeaponAmmo.textContent = `${character.equippedWeapon.currentAmmo} / ${character.equippedWeapon.maxAmmo}`;
-            ammoAmountSpan.textContent = character.equippedWeapon.currentAmmo;
-
-            if (character.equippedWeapon.name === 'Submetralhadora' || character.equippedWeapon.name === 'Fuzil de Assalto') {
-                burstControls.classList.remove('hidden');
-            } else {
-                burstControls.classList.add('hidden');
-            }
+        if (selectedCharacter.equippedWeapon) {
+            weaponNameElem.textContent = selectedCharacter.equippedWeapon.name;
+            weaponAmmoElem.textContent = `Munição: ${selectedCharacter.equippedWeapon.ammo}`;
+            equipButton.style.display = 'none';
+            desequipButton.style.display = 'inline';
+            reloadButton.style.display = 'inline';
+            burstControls.style.display = ['Submetralhadora', 'Fuzil de Assalto'].includes(selectedCharacter.equippedWeapon.name) ? 'block' : 'none';
         } else {
-            equippedWeaponSection.classList.add('hidden');
+            weaponNameElem.textContent = 'Nenhuma';
+            weaponAmmoElem.textContent = 'Munição: 0';
+            equipButton.style.display = 'inline';
+            desequipButton.style.display = 'none';
+            reloadButton.style.display = 'none';
+            burstControls.style.display = 'none';
         }
     }
 
-    function equipWeapon(index) {
-        if (character.equippedWeapon) {
-            character.inventory.weapons.push(character.equippedWeapon);
+    function addWeapon() {
+        const weaponType = prompt('Digite o tipo da arma (Pistola, Revólver, Fuzil de Caça, Submetralhadora, Espingarda, Fuzil de Assalto, Fuzil de Precisão, Metralhadora):');
+        const weaponAmmo = getWeaponAmmo(weaponType);
+        if (weaponType && weaponAmmo !== null) {
+            selectedCharacter.inventory.weapons.push({ name: weaponType, ammo: 0, maxAmmo: weaponAmmo });
+            localStorage.setItem('characters', JSON.stringify(characters));
+            updateInventory();
         }
-        character.equippedWeapon = character.inventory.weapons.splice(index, 1)[0];
-        updateWeaponList();
-        updateEquippedWeapon();
     }
 
-    function unequipWeapon() {
-        if (character.equippedWeapon) {
-            character.inventory.weapons.push(character.equippedWeapon);
-            character.equippedWeapon = null;
-            updateWeaponList();
+    function removeWeapon(index) {
+        const weapon = selectedCharacter.inventory.weapons[index];
+        if (weapon === selectedCharacter.equippedWeapon) {
+            desequipWeapon();
+        }
+        selectedCharacter.inventory.weapons.splice(index, 1);
+        localStorage.setItem('characters', JSON.stringify(characters));
+        updateInventory();
+    }
+
+    function addAmmo() {
+        const ammoType = prompt('Digite o tipo de munição (curtas ou longas):');
+        if (ammoType === 'curtas' || ammoType === 'longas') {
+            selectedCharacter.inventory.ammoPacks[ammoType].push({ bullets: 20 });
+            localStorage.setItem('characters', JSON.stringify(characters));
+            updateInventory();
+        } else {
+            alert('Tipo de munição inválido!');
+        }
+    }
+
+    function removeAmmoPack(type, index) {
+        selectedCharacter.inventory.ammoPacks[type].splice(index, 1);
+        localStorage.setItem('characters', JSON.stringify(characters));
+        updateInventory();
+    }
+
+    function equipWeapon() {
+        const weaponIndex = prompt('Digite o índice da arma para equipar:');
+        const weapon = selectedCharacter.inventory.weapons[weaponIndex];
+        if (weapon) {
+            selectedCharacter.equippedWeapon = weapon;
+            localStorage.setItem('characters', JSON.stringify(characters));
+            updateEquippedWeapon();
+        }
+    }
+
+    function desequipWeapon() {
+        if (selectedCharacter.equippedWeapon) {
+            selectedCharacter.inventory.weapons.push(selectedCharacter.equippedWeapon);
+            selectedCharacter.equippedWeapon = null;
+            localStorage.setItem('characters', JSON.stringify(characters));
+            updateInventory();
             updateEquippedWeapon();
         }
     }
 
     function reloadWeapon() {
-        if (character.equippedWeapon) {
-            const ammoType = ['Pistola', 'Revólver', 'Submetralhadora'].includes(character.equippedWeapon.name) ? 'curtas' : 'longas';
-            for (let i = 0; i < character.inventory.ammoPacks[ammoType].length; i++) {
-                const ammoNeeded = character.equippedWeapon.maxAmmo - character.equippedWeapon.currentAmmo;
-                if (ammoNeeded > 0 && character.inventory.ammoPacks[ammoType][i] > 0) {
-                    const ammoToTransfer = Math.min(ammoNeeded, character.inventory.ammoPacks[ammoType][i]);
-                    character.equippedWeapon.currentAmmo += ammoToTransfer;
-                    character.inventory.ammoPacks[ammoType][i] -= ammoToTransfer;
-                    if (character.inventory.ammoPacks[ammoType][i] <= 0) {
-                        character.inventory.ammoPacks[ammoType].splice(i, 1);
-                        i--;
-                    }
+        if (selectedCharacter.equippedWeapon) {
+            const ammoType = selectedCharacter.equippedWeapon.maxAmmo <= 20 ? 'curtas' : 'longas';
+            const ammoPack = selectedCharacter.inventory.ammoPacks[ammoType].pop();
+            if (ammoPack) {
+                const ammoToAdd = Math.min(ammoPack.bullets, selectedCharacter.equippedWeapon.maxAmmo - selectedCharacter.equippedWeapon.ammo);
+                selectedCharacter.equippedWeapon.ammo += ammoToAdd;
+                ammoPack.bullets -= ammoToAdd;
+                if (ammoPack.bullets === 0) {
+                    selectedCharacter.inventory.ammoPacks[ammoType] = selectedCharacter.inventory.ammoPacks[ammoType].filter(pack => pack !== ammoPack);
                 }
-                updateAmmoList();
+                localStorage.setItem('characters', JSON.stringify(characters));
                 updateEquippedWeapon();
+                updateInventory();
+            } else {
+                alert('Nenhum pacote de munição disponível!');
             }
         }
     }
 
-    function fireBurst() {
-        if (character.equippedWeapon && (character.equippedWeapon.name === 'Submetralhadora' || character.equippedWeapon.name === 'Fuzil de Assalto')) {
-            if (character.equippedWeapon.currentAmmo >= 10) {
-                character.equippedWeapon.currentAmmo -= 10;
-                updateEquippedWeapon();
-            }
+    function burstFire() {
+        if (selectedCharacter.equippedWeapon && ['Submetralhadora', 'Fuzil de Assalto'].includes(selectedCharacter.equippedWeapon.name)) {
+            selectedCharacter.equippedWeapon.ammo = Math.max(selectedCharacter.equippedWeapon.ammo - 10, 0);
+            localStorage.setItem('characters', JSON.stringify(characters));
+            updateEquippedWeapon();
         }
     }
 
-    function deleteCharacter() {
-        if (confirm('Tem certeza de que deseja deletar este personagem?')) {
-            characters.splice(currentCharacterIndex, 1);
+    function confirmAndDeleteCharacter() {
+        const confirmDelete = confirm('Tem certeza de que deseja deletar este personagem?');
+        if (confirmDelete) {
+            characters.splice(selectedCharacterIndex, 1);
             localStorage.setItem('characters', JSON.stringify(characters));
             window.location.href = 'index.html';
         }
     }
 
-    function adjustAmmoPack(type, index, delta) {
-        if (delta === 1) {
-            character.inventory.ammoPacks[type][index]++;
-        } else {
-            if (character.inventory.ammoPacks[type][index] > 0) {
-                character.inventory.ammoPacks[type][index]--;
-                if (character.inventory.ammoPacks[type][index] <= 0) {
-                    character.inventory.ammoPacks[type].splice(index, 1);
-                }
-            }
-        }
-        updateAmmoList();
-    }
-
-    function addAmmoPack(type, amount) {
-        character.inventory.ammoPacks[type].push(amount);
-        updateAmmoList();
-    }
-
-    function deleteWeapon(index) {
-        if (confirm('Tem certeza de que deseja deletar esta arma?')) {
-            character.inventory.weapons.splice(index, 1);
-            updateWeaponList();
-        }
-    }
-
-    function deleteAmmoPack(type, index) {
-        if (confirm('Tem certeza de que deseja deletar este pacote de munição?')) {
-            character.inventory.ammoPacks[type].splice(index, 1);
-            updateAmmoList();
-        }
-    }
-
-    function updateAmmoAmount(amount) {
-        if (character.equippedWeapon) {
-            character.equippedWeapon.currentAmmo = Math.max(0, Math.min(character.equippedWeapon.maxAmmo, character.equippedWeapon.currentAmmo + amount));
-            ammoAmountSpan.textContent = character.equippedWeapon.currentAmmo;
-            updateEquippedWeapon();
-        }
-    }
-
-    showAddWeaponMenuButton.addEventListener('click', () => {
-        addWeaponMenu.classList.remove('hidden');
-    });
-
-    closeAddWeaponMenuButton.addEventListener('click', () => {
-        addWeaponMenu.classList.add('hidden');
-    });
-
-    showAddAmmoMenuButton.addEventListener('click', () => {
-        addAmmoMenu.classList.remove('hidden');
-    });
-
-    closeAddAmmoMenuButton.addEventListener('click', () => {
-        addAmmoMenu.classList.add('hidden');
-    });
-
-    addWeaponMenu.querySelectorAll('button[data-weapon]').forEach(button => {
-        button.addEventListener('click', () => {
-            const weaponName = button.dataset.weapon;
-            const weapon = {
-                name: weaponName,
-                maxAmmo: {
-                    'Pistola': 12,
-                    'Revólver': 6,
-                    'Fuzil de Caça': 4,
-                    'Submetralhadora': 20,
-                    'Espingarda': 6,
-                    'Fuzil de Assalto': 30,
-                    'Fuzil de Precisão': 1,
-                    'Metralhadora': 50
-                }[weaponName],
-                currentAmmo: 0
-            };
-            character.inventory.weapons.push(weapon);
-            updateWeaponList();
-            addWeaponMenu.classList.add('hidden');
+    if (backToMainButton) {
+        backToMainButton.addEventListener('click', () => {
+            window.location.href = 'index.html';
         });
-    });
+    }
 
-    addAmmoMenu.querySelectorAll('button[data-ammo]').forEach(button => {
-        button.addEventListener('click', () => {
-            const ammoType = button.dataset.ammo;
-            addAmmoPack(ammoType, 20);
-            addAmmoMenu.classList.add('hidden');
-        });
-    });
+    if (addWeaponButton) {
+        addWeaponButton.addEventListener('click', addWeapon);
+    }
 
-    backToMenuButton.addEventListener('click', () => {
-        window.location.href = 'index.html';
-    });
+    if (addAmmoButton) {
+        addAmmoButton.addEventListener('click', addAmmo);
+    }
 
-    deleteCharacterButton.addEventListener('click', deleteCharacter);
-    reloadWeaponButton.addEventListener('click', reloadWeapon);
-    fireBurstButton.addEventListener('click', fireBurst);
-    unequipWeaponButton.addEventListener('click', unequipWeapon);
-    increaseAmmoButton.addEventListener('click', () => updateAmmoAmount(1));
-    decreaseAmmoButton.addEventListener('click', () => updateAmmoAmount(-1));
+    if (equipButton) {
+        equipButton.addEventListener('click', equipWeapon);
+    }
 
-    updateWeaponList();
-    updateAmmoList();
+    if (desequipButton) {
+        desequipButton.addEventListener('click', desequipWeapon);
+    }
+
+    if (reloadButton) {
+        reloadButton.addEventListener('click', reloadWeapon);
+    }
+
+    if (burstButton) {
+        burstButton.addEventListener('click', burstFire);
+    }
+
+    if (confirmDeleteButton) {
+        confirmDeleteButton.addEventListener('click', confirmAndDeleteCharacter);
+    }
+
+    updateInventory();
     updateEquippedWeapon();
 });
