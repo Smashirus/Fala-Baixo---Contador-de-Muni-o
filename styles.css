@@ -31,10 +31,76 @@ body {
     display: none;
 }
 
+#main-menu,
+#character-menu {
+    width: 100%;
+}
+
+#main-menu {
+    text-align: center;
+}
+
+#character-list {
+    margin-top: 20px;
+}
+
+#character-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+#character-list li {
+    margin: 5px 0;
+}
+
 #character-menu {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+}
+
+#inventory-management {
+    display: flex;
+    justify-content: center;
     width: 100%;
+}
+
+#inventory-management button {
+    margin: 0 10px;
+}
+
+#inventory {
+    width: 60%;
+    margin: 20px 0;
+}
+
+#inventory ul {
+    list-style: none;
+    padding: 0;
+}
+
+#inventory li {
+    margin: 5px 0;
+}
+
+#equipped-weapon {
+    width: 60%;
+    text-align: center;
+    margin: 20px 0;
+}
+
+#ammo-management {
+    width: 60%;
+    margin: 20px 0;
+}
+
+#ammo-management ul {
+    list-style: none;
+    padding: 0;
+}
+
+#ammo-management li {
+    margin: 5px 0;
 }
 
 #left-menu {
@@ -43,24 +109,8 @@ body {
     width: 20%;
 }
 
-#inventory {
-    width: 60%;
-}
-
-#add-weapon-menu,
-#add-ammo-menu {
-    margin-top: 20px;
-}
-
-#add-weapon-menu button,
-#add-ammo-menu button {
-    display: block;
-    margin: 5px 0;
-}
-
-.equipped-section {
-    margin-top: 20px;
-    text-align: center;
+#left-menu button {
+    margin-bottom: 10px;
 }
 
 .ammo-controls {
