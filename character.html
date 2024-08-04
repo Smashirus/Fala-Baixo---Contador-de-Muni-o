@@ -8,54 +8,35 @@
 </head>
 <body>
     <div class="container">
-        <button id="back-to-menu" class="button">Voltar ao Menu</button>
-        <button id="delete-character" class="button">Deletar Personagem</button>
-        <h2 id="character-name"></h2>
+        <button id="back-to-main" class="button">Voltar ao Menu Principal</button>
+        <h1>Inventário do Personagem</h1>
         <div id="character-menu">
             <div id="left-menu">
-                <button id="show-add-weapon-menu" class="button">Adicionar Arma</button>
-                <button id="show-add-ammo-menu" class="button">Adicionar Munição</button>
+                <button id="add-weapon" class="button">Adicionar Arma</button>
+                <button id="add-ammo" class="button">Adicionar Munição</button>
             </div>
             <div id="inventory">
                 <h2>Inventário</h2>
-                <ul id="weapon-list"></ul>
+                <ul id="item-list"></ul>
+                <h2>Pacotes de Munição</h2>
                 <ul id="ammo-list"></ul>
             </div>
-        </div>
-        <div id="add-weapon-menu" class="hidden">
-            <h2>Adicionar Arma</h2>
-            <button class="button" data-weapon="Pistola">Pistola</button>
-            <button class="button" data-weapon="Revólver">Revólver</button>
-            <button class="button" data-weapon="Fuzil de Caça">Fuzil de Caça</button>
-            <button class="button" data-weapon="Submetralhadora">Submetralhadora</button>
-            <button class="button" data-weapon="Espingarda">Espingarda</button>
-            <button class="button" data-weapon="Fuzil de Assalto">Fuzil de Assalto</button>
-            <button class="button" data-weapon="Fuzil de Precisão">Fuzil de Precisão</button>
-            <button class="button" data-weapon="Metralhadora">Metralhadora</button>
-            <button id="close-add-weapon-menu" class="button">Fechar</button>
-        </div>
-        <div id="add-ammo-menu" class="hidden">
-            <h2>Adicionar Munição</h2>
-            <button class="button" data-ammo="curtas">Balas Curtas</button>
-            <button class="button" data-ammo="longas">Balas Longas</button>
-            <button id="close-add-ammo-menu" class="button">Fechar</button>
-        </div>
-        <div id="equipped-weapon-section" class="equipped-section hidden">
-            <h2>Arma Equipada</h2>
-            <p id="equipped-weapon-name">Nenhuma</p>
-            <p id="equipped-weapon-ammo">0 / 0</p>
-            <button id="reload-weapon" class="button">Recarregar</button>
-            <div id="burst-controls" class="hidden">
-                <button id="fire-burst" class="button">Rajada</button>
-            </div>
-            <button id="unequip-weapon" class="button">Desequipar</button>
-            <div id="ammo-controls" class="ammo-controls">
-                <button id="decrease-ammo" class="button">-</button>
-                <span id="ammo-amount">0</span>
-                <button id="increase-ammo" class="button">+</button>
+            <div id="character-details">
+                <div id="weapon-info">
+                    <h2>Arma Equiparada</h2>
+                    <p id="weapon-name">Nenhuma</p>
+                    <p id="weapon-ammo">Munição: 0</p>
+                    <button id="equip-button" class="button">Equipar Arma</button>
+                    <button id="deselect-button" class="button hidden">Desequipar Arma</button>
+                    <button id="reload-button" class="button hidden">Recarregar</button>
+                    <div id="burst-controls" class="hidden">
+                        <button id="burst-button" class="button">Rajada</button>
+                    </div>
+                </div>
             </div>
         </div>
-        <script src="character.js"></script>
+        <button id="confirm-delete" class="button">Deletar Personagem</button>
     </div>
+    <script src="character.js"></script>
 </body>
 </html>
