@@ -9,10 +9,44 @@
 <body>
     <div class="container">
         <h1>Gerenciador de Munição e Armas</h1>
-        <button id="create-character" class="button">Criar Personagem</button>
-        <div id="character-list">
-            <h2>Selecionar Agente</h2>
-            <ul id="characters"></ul>
+        
+        <!-- Menu Principal -->
+        <div id="main-menu">
+            <button id="create-character" class="button">Criar Personagem</button>
+            <div id="character-list">
+                <h2>Selecionar Agente</h2>
+                <ul id="characters"></ul>
+            </div>
+        </div>
+        
+        <!-- Menu do Personagem -->
+        <div id="character-menu" style="display: none;">
+            <button id="back-to-main" class="button">Voltar ao Menu Principal</button>
+            <h2>Inventário do Personagem <span id="character-name"></span></h2>
+            
+            <div id="inventory-management">
+                <button id="add-weapon" class="button">Adicionar Arma</button>
+                <button id="add-ammo" class="button">Adicionar Munição</button>
+            </div>
+            
+            <div id="inventory">
+                <h3>Itens do Inventário</h3>
+                <ul id="item-list"></ul>
+            </div>
+            
+            <div id="equipped-weapon">
+                <h3>Arma Equiparada:</h3>
+                <p id="weapon-name">Nenhuma</p>
+                <p id="weapon-ammo">Munição: 0</p>
+                <button id="equip-button" class="button">Equipar</button>
+                <button id="deselect-button" class="button">Desequipar</button>
+                <button id="reload-button" class="button">Recarregar</button>
+            </div>
+            
+            <div id="ammo-management">
+                <h3>Pacotes de Munição</h3>
+                <ul id="ammo-list"></ul>
+            </div>
         </div>
     </div>
     <script src="index.js"></script>
